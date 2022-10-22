@@ -7,6 +7,7 @@ Lua bindings updated from the fork to support -string-style and link_prefix.
   - Add the shared folder to the odin shared collection.
   - Call functions like you would in C; substitute the `lua_/luaL_` prefixes with the corresponding packages: `luaL.dofile`
   - Some function names clash with keywords, therefore they were named with an underscore prefix: `luaL._where` `lua._type`
+  - The `luax` package contains extra lua utlities not available in the standard C API
   
 
 ### Known issues
