@@ -105,9 +105,10 @@ foreign liblua {
 }
 
 @(default_calling_convention = "c")
-foreign liblua{
+@(link_prefix = "lua")
+foreign liblua {
 	// Note(Dragos): avoid conflicts with keywords
-	lua_type :: proc (L: ^State , idx: c.int ) -> c.int ---
+	_type :: proc (L: ^State , idx: c.int ) -> c.int ---
 }
 
 /*
@@ -289,41 +290,41 @@ pushcfunction :: proc (L: ^State, f: CFunction )
 
 isfunction :: proc (L: ^State, n: c.int) -> c.bool 
 {
-	return (lua_type(L, (n)) == TFUNCTION)
+	return (_type(L, (n)) == TFUNCTION)
 }	
 
 istable :: proc (L: ^State, n:c.int) -> c.bool
 {
-	return (lua_type(L, (n)) == TTABLE)
+	return (_type(L, (n)) == TTABLE)
 }
 
 islightuserdata :: proc (L: ^State, n:c.int) -> c.bool
 {	
-	return (lua_type(L, (n)) == TLIGHTUSERDATA)
+	return (_type(L, (n)) == TLIGHTUSERDATA)
 }
 isnil :: proc (L: ^State, n:c.int ) -> c.bool
 {
-	return (lua_type(L, (n)) == TNIL)
+	return (_type(L, (n)) == TNIL)
 }
 
 isboolean :: proc (L: ^State, n: c.int ) -> c.bool
 {
-	return (lua_type(L, (n)) == TBOOLEAN)
+	return (_type(L, (n)) == TBOOLEAN)
 }	
 
 isthread :: proc (L: ^State, n: c.int) -> c.bool
 {
-	return (lua_type(L, (n)) == TTHREAD)
+	return (_type(L, (n)) == TTHREAD)
 }
 
 isnone :: proc (L: ^State, n: c.int) -> c.bool
 {
-	return (lua_type(L, (n)) == TNONE)
+	return (_type(L, (n)) == TNONE)
 }
 	
 isnoneornil :: proc (L: ^State, n:c.int) -> c.bool
 {
-	return (lua_type(L, (n)) <= 0)
+	return (_type(L, (n)) <= 0)
 }
 
 pushliteral :: proc (L: ^State, s:cstring)	

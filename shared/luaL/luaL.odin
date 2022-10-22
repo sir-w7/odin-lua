@@ -49,9 +49,11 @@ foreign liblua {
 	traceback :: proc (L: ^lua.State , L1: ^lua.State ,msg: cstring, level: c.int ) ---
 }
 
+@(default_calling_convention = "c")
+@(link_prefix = "luaL")
 foreign liblua {
 	// Note(Dragos): Avoid clashes with keywords
-	luaL_where :: proc (L: ^lua.State , lvl: c.int ) ---
+	_where :: proc (L: ^lua.State , lvl: c.int ) ---
 }
 
 /*
