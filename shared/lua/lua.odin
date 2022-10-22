@@ -369,12 +369,10 @@ call :: proc (L: ^State, n: c.int, r: c.int)
 	callk(L, (n), (r), 0, nil)
 }
 
-pcall :: proc (L: ^State, n: c.int, r: c.int, f: c.int) -> c.int
-{
+pcall :: proc (L: ^State, n: c.int, r: c.int, f: c.int) -> c.int {
 	return pcallk(L, (n), (r), (f), 0, nil)
 }
 
-upvalueindex :: proc (i: c.int) -> c.int
-{
+upvalueindex :: proc (i: c.int) -> c.int {
 	return (REGISTRYINDEX - (i))
 }
