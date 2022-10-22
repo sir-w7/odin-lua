@@ -25,6 +25,22 @@ get_string :: proc(L: ^lua.State, stackPos: c.int, result: ^string) {
     result^ = lua.tostring(L, stackPos)
 }
 
+push_int :: proc(L: ^lua.State, val: int) {
+    lua.pushinteger(L, cast(i64)val)
+}
+
+push_float :: proc(L: ^lua.State, val: f32) {
+    lua.pushnumber(L, cast(f32)val)
+}
+
+push_bool :: proc(L: ^lua.State, val: bool) {
+    lua.pushboolean(L, val)
+}
+
+push_cstring :: proc(L: ^lua.State, val: cstring) {
+    lua.pushstring(L, val)
+}
+
 get :: proc {
     get_int,
     get_bool,
@@ -33,10 +49,9 @@ get :: proc {
 }
 
 push :: proc {
-	lua.pushboolean,
-	lua.pushinteger,
-	lua.pushnumber,
+	push_int,
+	push_float,
+    push_cstring,
 	lua.pushlightuserdata,
 	lua.pushcfunction,
-	lua.pushstring,
 }
