@@ -1,43 +1,43 @@
-package luaL;
+package luaL
 
 import "core:os"
 import "core:c"
 
 import lua "../lua"
 
-when os.OS == .Windows do foreign import liblua "shared:lua542.lib";
-when os.OS == .Linux do foreign import liblua "shared:lua542";
-when os.OS == .Darwin do foreign import liblua "shared:lua542";
+when os.OS == .Windows do foreign import liblua "shared:lua542.lib"
+when os.OS == .Linux do foreign import liblua "shared:lua542"
+when os.OS == .Darwin do foreign import liblua "shared:lua542"
 
 @(default_calling_convention = "c")
 @(link_prefix = "luaL_")
 foreign liblua {
-	// lua_pushfstring :: proc (L: ^lua.State , fmt: cstring , ...) -> cstring ---;
-	// lua_pushvfstring :: proc (L: ^lua.State , fmt: cstring , va_list argp) -> cstring ---;
-	argerror :: proc (L: ^lua.State , arg: c.int , extramsg: cstring) -> c.int ---;
-	callmeta :: proc (L: ^lua.State , obj: c.int , e: cstring ) -> c.int ---;
-	checkany :: proc (L: ^lua.State , arg: c.int) ---;
-	checkinteger :: proc (L: ^lua.State , arg: c.int) -> lua.Integer ---;
-	checklstring :: proc (L: ^lua.State , arg: c.int , l: ^c.ptrdiff_t)-> cstring ---;
-	checknumber :: proc (L: ^lua.State , arg: c.int ) -> lua.Number ---;
-	checkoption :: proc (L: ^lua.State , arg: c.int, def: cstring, lst : ^cstring ) -> c.int ---;
-	checkstack :: proc (L: ^lua.State , sz: c.int , msg: cstring) ---;
-	checktype :: proc (L: ^lua.State , arg: c.int, t: c.int) ---;
-	checkudata :: proc (L: ^lua.State , ud: c.int , tname: cstring) -> rawptr ---;
-	checkversion_ :: proc (L: ^lua.State , ver:lua.Number , sz: c.ptrdiff_t ) ---;
-	execresult :: proc (L: ^lua.State , stat: c.int ) -> c.int ---;
-	fileresult :: proc (L: ^lua.State , stat: c.int , fname: cstring) -> c.int ---;
-	getmetafield :: proc (L: ^lua.State , obj: c.int , e: cstring ) -> c.int ---;
-	getsubtable :: proc (L: ^lua.State , idx: c.int , fname: cstring) -> c.int ---;
-	gsub :: proc (L : ^lua.State, s: cstring, p: cstring, r: cstring) -> cstring ---;
-	len :: proc (L: ^lua.State , idx: c.int ) -> lua.Integer ---;
-	loadbufferx :: proc (L: ^lua.State , buff: cstring, sz: c.ptrdiff_t , name: cstring, mode: cstring) -> c.int ---;
-	loadfilex :: proc (L: ^lua.State , filename: cstring, mode: cstring) -> c.int ---;
-	loadstring :: proc (L: ^lua.State , s: cstring) -> c.int ---;
-	newmetatable :: proc (L: ^lua.State , tname: cstring) -> c.int ---;
-	newstate :: proc () -> ^lua.State ---;
-	openlibs :: proc (L: ^lua.State) ---;
-	optinteger :: proc (L: ^lua.State , arg: c.int,def: lua.Integer ) -> lua.Integer ---;
+	// lua_pushfstring :: proc (L: ^lua.State , fmt: cstring , ...) -> cstring ---
+	// lua_pushvfstring :: proc (L: ^lua.State , fmt: cstring , va_list argp) -> cstring ---
+	argerror :: proc (L: ^lua.State , arg: c.int , extramsg: cstring) -> c.int ---
+	callmeta :: proc (L: ^lua.State , obj: c.int , e: cstring ) -> c.int ---
+	checkany :: proc (L: ^lua.State , arg: c.int) ---
+	checkinteger :: proc (L: ^lua.State , arg: c.int) -> lua.Integer ---
+	checklstring :: proc (L: ^lua.State , arg: c.int , l: ^c.ptrdiff_t)-> cstring ---
+	checknumber :: proc (L: ^lua.State , arg: c.int ) -> lua.Number ---
+	checkoption :: proc (L: ^lua.State , arg: c.int, def: cstring, lst : ^cstring ) -> c.int ---
+	checkstack :: proc (L: ^lua.State , sz: c.int , msg: cstring) ---
+	checktype :: proc (L: ^lua.State , arg: c.int, t: c.int) ---
+	checkudata :: proc (L: ^lua.State , ud: c.int , tname: cstring) -> rawptr ---
+	checkversion_ :: proc (L: ^lua.State , ver:lua.Number , sz: c.ptrdiff_t ) ---
+	execresult :: proc (L: ^lua.State , stat: c.int ) -> c.int ---
+	fileresult :: proc (L: ^lua.State , stat: c.int , fname: cstring) -> c.int ---
+	getmetafield :: proc (L: ^lua.State , obj: c.int , e: cstring ) -> c.int ---
+	getsubtable :: proc (L: ^lua.State , idx: c.int , fname: cstring) -> c.int ---
+	gsub :: proc (L : ^lua.State, s: cstring, p: cstring, r: cstring) -> cstring ---
+	len :: proc (L: ^lua.State , idx: c.int ) -> lua.Integer ---
+	loadbufferx :: proc (L: ^lua.State , buff: cstring, sz: c.ptrdiff_t , name: cstring, mode: cstring) -> c.int ---
+	loadfilex :: proc (L: ^lua.State , filename: cstring, mode: cstring) -> c.int ---
+	loadstring :: proc (L: ^lua.State , s: cstring) -> c.int ---
+	newmetatable :: proc (L: ^lua.State , tname: cstring) -> c.int ---
+	newstate :: proc () -> ^lua.State ---
+	openlibs :: proc (L: ^lua.State) ---
+	optinteger :: proc (L: ^lua.State , arg: c.int,def: lua.Integer ) -> lua.Integer ---
 	optlstring :: proc (L: ^lua.State , arg: c.int , def: cstring, l: ^c.ptrdiff_t) -> cstring ---
 	optnumber :: proc (L: ^lua.State , arg: c.int , def:lua.Number) -> lua.Number ---
 	ref :: proc (L: ^lua.State , t: c.int ) -> c.int ---
@@ -67,15 +67,14 @@ NUMSIZES :: (size_of(lua.Integer)*16 + size_of(lua.Number))
 /*
 	TYPES
 */
-unref :: proc "c" (L: ^lua.State , t: c.int , ref: c.int )
+unref :: proc "c" (L: ^lua.State, t: c.int, ref: c.int)
 
-// lua_ident: ^u8;
+// lua_ident: ^u8
 
-Reg :: struct  
-{
+Reg :: struct {
 	name: cstring,
 	func: lua.CFunction,
-};
+}
 
 
 
@@ -89,14 +88,12 @@ Reg :: struct
 // }	
 
 
-loadfile :: proc (L: ^lua.State, f: cstring)
-{
-	loadfilex(L,f,nil);
+loadfile :: proc (L: ^lua.State, f: cstring) -> c.int {
+	return loadfilex(L, f, nil)
 }
 
-checkversion :: proc (L: ^lua.State)
-{
-	checkversion_(L, lua.VERSION_NUM, NUMSIZES);
+checkversion :: proc (L: ^lua.State) {
+	checkversion_(L, lua.VERSION_NUM, NUMSIZES)
 }
 
 // luaL_newlibtable :: proc (L:^ lua.State,l: ^luaL_Reg)
@@ -120,22 +117,22 @@ checkversion :: proc (L: ^lua.State)
 // luaL_typename :: (L:^ lua.State,i)	lua_typename(L, lua_type(L,(i)))
 
 // Note(Dragos): Error handling is not properly made I believe. Loadfile can also error
-dofile :: proc (L:^ lua.State, fn: cstring) -> c.int
-{
-	loadfile(L, fn);
-	return lua.pcall(L, 0, lua.MULTRET, 0);
+dofile :: proc (L:^ lua.State, fn: cstring) -> (err: c.int) {
+	err = loadfile(L, fn)
+	if err != lua.OK do return
+	err = lua.pcall(L, 0, lua.MULTRET, 0)
+	return
 }
 
-dostring :: proc (L:^ lua.State, s: cstring) -> bool
-{
-	if loadstring(L, s) != 0 do return false;
-	if lua.pcall(L, 0, lua.MULTRET, 0) != 0 do return false;
-	return true;
+dostring :: proc (L:^ lua.State, s: cstring) -> (err: c.int) {
+	err = loadstring(L, s)
+	if err != lua.OK do return
+	err = lua.pcall(L, 0, lua.MULTRET, 0)
+	return
 }
 
-getmetatable :: proc (L:^ lua.State, n:cstring)
-{
-	lua.getfield(L, lua.REGISTRYINDEX, (n));
+getmetatable :: proc (L:^ lua.State, n:cstring) {
+	lua.getfield(L, lua.REGISTRYINDEX, (n))
 }
 
 // luaL_opt :: (L:^ lua.State,f,n,d)	(lua_isnoneornil(L,(n)) ? (d) : f(L,(n)))
