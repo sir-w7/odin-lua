@@ -2,6 +2,7 @@ package lua
 
 import "core:os"
 import "core:c"
+import "core:strings" // see pushstring
 
 // Note(Dragos): This should be made more generic
 when os.OS == .Windows do foreign import liblua "shared:lua542.lib"
@@ -62,7 +63,7 @@ foreign liblua {
 	pushlstring :: proc (L: ^State , s: cstring, len: c.ptrdiff_t) -> cstring ---
 	pushnil :: proc (L: ^State ) ---
 	pushnumber :: proc (L: ^State ,  n: Number) ---
-	pushstring :: proc (L: ^State , s: cstring) -> cstring ---
+	
 	pushthread :: proc (L: ^State ) -> c.int ---
 	pushvalue :: proc (L: ^State , idx:c.int ) ---
 	rawequal :: proc (L: ^State ,  idx1: c.int,  idx2: c.int) -> c.int ---
@@ -102,6 +103,10 @@ foreign liblua {
 	version :: proc (L: ^State ) -> ^Number ---
 	xmove :: proc (from: ^State, to: ^State, n:c.int) ---
 	yieldk :: proc (L: ^State , nresults: c.int, ctx: KContext, k: KFunction ) -> c.int ---
+
+	// Odinify
+	@(link_name = "lua_pushstring")
+	pushcstring :: proc (L: ^State , s: cstring) -> cstring ---
 }
 
 @(default_calling_convention = "c")
@@ -329,7 +334,7 @@ isnoneornil :: proc (L: ^State, n:c.int) -> c.bool
 
 pushliteral :: proc (L: ^State, s:cstring)	
 {
-	pushstring(L, s)
+	pushcstring(L, s)
 }
 
 pushglobaltable :: proc (L: ^State)
@@ -375,4 +380,12 @@ pcall :: proc (L: ^State, n: c.int, r: c.int, f: c.int) -> c.int {
 
 upvalueindex :: proc (i: c.int) -> c.int {
 	return (REGISTRYINDEX - (i))
+}
+
+
+// lua_pushstring will convert a string to cstring and push; it will allocate and return the pushed cstring
+pushstring :: proc(L: ^State, str: string, allocator := context.allocator) -> cstring {
+	cstr := strings.clone_to_cstring(str, allocator)
+	pushcstring(L, cstr)
+	return cstr
 }
