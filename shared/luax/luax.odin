@@ -46,6 +46,10 @@ push_string :: proc(L: ^lua.State, val: string) {
     lua.pushstring(L, val, context.temp_allocator)
 }
 
+push_lightuserdata :: proc(L: ^lua.State, val: ^$T) {
+    lua.pushlightuserdata(L, cast(rawptr)val)
+}
+
 get :: proc {
     get_int,
     get_bool,
@@ -58,6 +62,6 @@ push :: proc {
 	push_float,
     push_cstring,
     push_string,
-	lua.pushlightuserdata,
+	push_lightuserdata,
 	lua.pushcfunction,
 }
