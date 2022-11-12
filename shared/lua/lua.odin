@@ -53,7 +53,7 @@ foreign liblua {
 	load :: proc (L: ^State , reader: Reader, dt: rawptr, chunkname: cstring, mode: cstring) -> c.int --- 
 	newstate :: proc (f: Alloc, ud :rawptr) -> ^State ---
 	newthread :: proc (L: ^State ) -> ^State ---
-	newuserdata :: proc (L: ^State ,  sz:c.ptrdiff_t) -> rawptr ---
+	newuserdatauv :: proc (L: ^State, sz: c.ptrdiff_t, nuvalue: c.int) -> rawptr ---
 	next :: proc (L: ^State , idx: c.int) -> c.int ---
 	pcallk :: proc (L: ^State , nargs: c.int, nresults: c.int, errfunc: c.int, ctx: KContext , k: KFunction ) -> c.int  ---
 	pushboolean :: proc (L: ^State , b: c.bool ) ---
@@ -263,7 +263,11 @@ Debug :: struct {
 // 	(cast(rawptr)(cast(^i8)c.ptrdiff_t(L) - LUA_EXTRASPACE));
 // }	
 
-tonumber :: proc (L: ^State , i: c.int) -> Number
+newuserdata :: proc(L: ^State, sz: c.ptrdiff_t) -> rawptr {
+	return newuserdatauv(L, sz, 1)
+}
+
+tonumber :: proc (L: ^State, i: c.int) -> Number
 {
 	return Number( tonumberx(L,(i),nil) )
 }	
