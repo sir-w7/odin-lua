@@ -7,7 +7,7 @@ import lua "../lua"
 
 when os.OS == .Windows do foreign import liblua "shared:lua542.lib"
 when os.OS == .Linux do foreign import liblua "shared:lua542"
-when os.OS == .Darwin do foreign import liblua "shared:lua542"
+when os.OS == .Darwin do foreign import liblua "ext:lualib.a"
 
 @(default_calling_convention = "c")
 @(link_prefix = "luaL_")
@@ -40,6 +40,7 @@ foreign liblua {
 	optinteger :: proc (L: ^lua.State , arg: c.int,def: lua.Integer ) -> lua.Integer ---
 	optlstring :: proc (L: ^lua.State , arg: c.int , def: cstring, l: ^c.ptrdiff_t) -> cstring ---
 	optnumber :: proc (L: ^lua.State , arg: c.int , def:lua.Number) -> lua.Number ---
+	pushnil :: proc (L: ^lua.State) ---
 	ref :: proc (L: ^lua.State , t: c.int ) -> c.int ---
 	requiref :: proc (L: ^lua.State , modname: cstring, openf: lua.CFunction , glb: c.int ) ---
 	setfuncs :: proc (L: ^lua.State , l: ^Reg, nup: c.int ) --- 
