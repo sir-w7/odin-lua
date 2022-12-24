@@ -7,7 +7,7 @@ import "core:strings" // see pushstring
 // Note(Dragos): This should be made more generic
 when os.OS == .Windows do foreign import liblua "shared:lua542.lib"
 when os.OS == .Linux do foreign import liblua "shared:lua542"
-when os.OS == .Darwin do foreign import liblua "ext:liblua.a"
+when os.OS == .Darwin do foreign import liblua "../liblua.a"
 
 
 @(default_calling_convention = "c")
@@ -121,9 +121,9 @@ foreign liblua {
 	CONSTANTS
 */
 VERSION_MAJOR ::	"5"
-VERSION_MINOR ::	"3"
-VERSION_NUM ::		503
-VERSION_RELEASE ::	"5"
+VERSION_MINOR ::	"4"
+VERSION_NUM ::		504
+VERSION_RELEASE ::	"4"
 
 VERSION ::	"Lua " + VERSION_MAJOR + "." + VERSION_MINOR
 RELEASE ::	VERSION + "." + VERSION_RELEASE
@@ -133,7 +133,7 @@ AUTHORS ::	"R. Ierusalimschy, L. H. de Figueiredo, W. Celes"
 SIGNATURE :: "\x1bLua"
 MULTRET	:: (-1)
 
-NUMBER :: c.float
+NUMBER :: c.double
 INTEGER :: c.longlong
 KCONTEXT :: c.ptrdiff_t
 IDSIZE :: 60
@@ -264,126 +264,127 @@ Debug :: struct {
 // 	(cast(rawptr)(cast(^i8)c.ptrdiff_t(L) - LUA_EXTRASPACE));
 // }	
 
-newuserdata :: proc(L: ^State, sz: c.ptrdiff_t) -> rawptr {
+newuserdata :: proc "c" (L: ^State, sz: c.ptrdiff_t) -> rawptr {
 	return newuserdatauv(L, sz, 1)
 }
 
-tonumber :: proc (L: ^State, i: c.int) -> Number
+tonumber :: proc "c" (L: ^State, i: c.int) -> Number
 {
-	return Number( tonumberx(L,(i),nil) )
+	return Number(tonumberx(L, (i), nil))
 }	
 
-tointeger :: proc (L: ^State ,i: c.int) -> Integer
+tointeger :: proc "c" (L: ^State ,i: c.int) -> Integer
 {
-	return Integer( tointegerx(L,(i),nil) )
+	return Integer(tointegerx(L, (i), nil))
 }
-pop :: proc (L: ^State ,n: c.int )
+pop :: proc "c" (L: ^State, n: c.int)
 {
 	settop(L, -(n)-1)
 }		
 
-newtable :: proc (L: ^State )
+newtable :: proc "c" (L: ^State)
 {		
 	createtable(L, 0, 0)
 }
 
-register :: proc (L: ^State, n: cstring, f: CFunction )
+register :: proc "c" (L: ^State, n: cstring, f: CFunction )
 {
  	pushcfunction(L, (f))
  	setglobal(L, (n))
 }
 
-pushcfunction :: proc (L: ^State, f: CFunction )
+pushcfunction :: proc "c" (L: ^State, f: CFunction )
 {
 	pushcclosure(L, (f), 0)
 }	
 
-isfunction :: proc (L: ^State, n: c.int) -> c.bool 
+isfunction :: proc "c" (L: ^State, n: c.int) -> c.bool 
 {
 	return (_type(L, (n)) == TFUNCTION)
 }	
 
-istable :: proc (L: ^State, n:c.int) -> c.bool
+istable :: proc "c" (L: ^State, n:c.int) -> c.bool
 {
 	return (_type(L, (n)) == TTABLE)
 }
 
-islightuserdata :: proc (L: ^State, n:c.int) -> c.bool
+islightuserdata :: proc "c" (L: ^State, n:c.int) -> c.bool
 {	
 	return (_type(L, (n)) == TLIGHTUSERDATA)
 }
-isnil :: proc (L: ^State, n:c.int ) -> c.bool
+
+isnil :: proc "c" (L: ^State, n:c.int ) -> c.bool
 {
 	return (_type(L, (n)) == TNIL)
 }
 
-isboolean :: proc (L: ^State, n: c.int ) -> c.bool
+isboolean :: proc "c" (L: ^State, n: c.int ) -> c.bool
 {
 	return (_type(L, (n)) == TBOOLEAN)
 }	
 
-isthread :: proc (L: ^State, n: c.int) -> c.bool
+isthread :: proc "c" (L: ^State, n: c.int) -> c.bool
 {
 	return (_type(L, (n)) == TTHREAD)
 }
 
-isnone :: proc (L: ^State, n: c.int) -> c.bool
+isnone :: proc "c" (L: ^State, n: c.int) -> c.bool
 {
 	return (_type(L, (n)) == TNONE)
 }
 	
-isnoneornil :: proc (L: ^State, n:c.int) -> c.bool
+isnoneornil :: proc "c" (L: ^State, n:c.int) -> c.bool
 {
 	return (_type(L, (n)) <= 0)
 }
 
-pushliteral :: proc (L: ^State, s:cstring)	
+pushliteral :: proc "c" (L: ^State, s:cstring)	
 {
 	pushcstring(L, s)
 }
 
-pushglobaltable :: proc (L: ^State)
+pushglobaltable :: proc "c" (L: ^State)
 {
 	rawgeti(L, REGISTRYINDEX, RIDX_GLOBALS)
 } 
 	
-tostring :: proc (L: ^State, i: c.int) -> string
+tostring :: proc "c" (L: ^State, i: c.int) -> string
 {
 	return string( tolstring(L, (i), nil) )
 }	
 
-insert :: proc (L: ^State, idx:c.int)
+insert :: proc "c" (L: ^State, idx:c.int)
 {
 	rotate(L, (idx), 1)
 }	
 
-remove :: proc (L: ^State, idx: c.int)
+remove :: proc "c" (L: ^State, idx: c.int)
 {	
 	rotate(L, (idx), -1)
 	pop(L, 1)
 }
 
-replace :: proc (L: ^State, idx: c.int)	
+replace :: proc "c" (L: ^State, idx: c.int)	
 {
 	copy(L, -1, (idx))
 	pop(L, 1)
 }
 
-yield :: proc(L : ^State, n: c.int)
+yield :: proc "c" (L : ^State, n: c.int)
 {
 	yieldk(L, (n), 0, nil)
 }		
 
-call :: proc (L: ^State, n: c.int, r: c.int)
+call :: proc "c" (L: ^State, n: c.int, r: c.int)
 {
 	callk(L, (n), (r), 0, nil)
 }
 
-pcall :: proc (L: ^State, n: c.int, r: c.int, f: c.int) -> c.int {
+pcall :: proc "c" (L: ^State, n: c.int, r: c.int, f: c.int) -> c.int {
 	return pcallk(L, (n), (r), (f), 0, nil)
 }
 
-upvalueindex :: proc (i: c.int) -> c.int {
+upvalueindex :: proc "c" (i: c.int) -> c.int {
 	return (REGISTRYINDEX - (i))
 }
 
